@@ -19,3 +19,6 @@ data class Param1NullableString(val nullableString: String?)
 
 @JvmBuilder
 data class NullableAndMandatoryMixed(val nullableString: String?, val nonNullableString: String)
+
+@JvmBuilder
+data class Param1Default(val defaultString: String = "The D. Fault")

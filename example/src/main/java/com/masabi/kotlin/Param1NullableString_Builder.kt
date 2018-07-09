@@ -16,20 +16,21 @@ class Param1NullableString_Builder_Desired {
         val constructor = ::NullableAndMandatoryMixed
 
         // the names in this class and the names in the constructor should be a direct match as this was generated
-        val parametersByName = constructor.parameters.groupBy { it.name }.mapValues { it.value.first() }
+        val parametersByName = ::NullableAndMandatoryMixed.parameters.groupBy { it.name }.mapValues { it.value.first() }
         verifyNonNullArgumentsArePresent(parametersByName)
         // constructor.parameters.get(1).type.isMarkedNullable
 
+        return constructor.callBy(mapOf())
 
-        return constructor.callBy(mapOf(
-                constructor.parameters.get(0) to nullableString,
-                constructor.parameters.get(1) to nonNullableString)
-        )
+//        return constructor.callBy(mapOf(
+//                constructor.parameters.get(0) to nullableString,
+//                constructor.parameters.get(1) to nonNullableString)
+//        )
     }
 
     private fun verifyNonNullArgumentsArePresent(parametersByName: Map<String?, KParameter>) {
-        val nonNullableParameters = parametersByName
-            .filter { !it.value.type.isMarkedNullable }
-        if (nonNullableString == null && nonNullableParameters.containsKey("nonNullableString")) throw IllegalStateException("'nonNullableString' cannot be null")
+//        val nonNullableParameters = parametersByName
+//            .filter { !it.value.type.isMarkedNullable }
+//        if (nonNullableString == null && nonNullableParameters.containsKey("nonNullableString")) throw IllegalStateException("'nonNullableString' cannot be null")
     }
 }

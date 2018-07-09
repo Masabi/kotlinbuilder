@@ -40,19 +40,6 @@ class BuildingSpec extends Specification {
             direct == built
     }
 
-    // TODO we can do java string or kotlin strings, not both - as this is for data classes we err on the side of kotlin strings
-    @PendingFeature()
-    def "can build an object with a java string"() {
-//        given:
-//            def direct = new Param1JavaString("Hello Java World")
-//            def built = new Param1JavaString_Builder()
-//                    .withParam1("Hello Java World")
-//                    .build()
-
-//        expect:
-//            direct == built
-    }
-
     def "can build an object with a kotlin string"() {
         given:
             def direct = new Param1KotlinString("Hello Java World")
@@ -69,7 +56,7 @@ class BuildingSpec extends Specification {
             new Param1Int_Builder().build()
 
         then:
-            thrown(NullPointerException)
+            thrown(IllegalStateException)
     }
 
     def "will not error if nullable parameters aren't provided"() {
@@ -79,6 +66,11 @@ class BuildingSpec extends Specification {
 
     def "can mix nullable and non-nullable"() {
         expect:
-            new Param1NullableString_Builder_Desired().build().nullableString == null
+            new NullableAndMandatoryMixed_Builder().withNonNullableString("I'm here").build().nonNullableString == "I'm here"
+    }
+
+    def "uses defaults when provided"() {
+        expect:
+            new Param1Default_Builder().build().defaultString == "The D. Fault"
     }
 }
