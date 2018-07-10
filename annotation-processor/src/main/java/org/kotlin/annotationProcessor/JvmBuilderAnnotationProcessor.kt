@@ -87,12 +87,13 @@ class JvmBuilderAnnotationProcessor : AbstractProcessor() {
             val targetClass: TypeMirror
     ) {
         fun propertySpecs(): Iterable<PropertySpec> {
-            return properties.map { it.asPropertySpec() } + mapBasedProperties()
+            return listOf(mapBasedProperties())
         }
 
         private fun mapBasedProperties(): PropertySpec {
             val name = ParameterizedTypeName.get(ClassName("kotlin.collections", "MutableMap"), String::class.asTypeName(), Any::class.asTypeName().asNullable())
             return PropertySpec.builder("values", name)
+                .addModifiers(KModifier.PRIVATE)
                 .initializer("mutableMapOf()")
                 .build()
         }
@@ -158,18 +159,10 @@ class JvmBuilderAnnotationProcessor : AbstractProcessor() {
     }
 
     data class BuilderField(val name: String, val type: TypeName) {
-        fun asPropertySpec() =
-            PropertySpec.builder(name, type.asNullable())
-                .mutable(true)
-                .addModifiers(KModifier.PRIVATE)
-                .initializer("null")
-                .build()
-
         fun asFunSpec(builderClass: String): FunSpec {
             return FunSpec.builder("with${name.capitalize()}")
                     .returns(ClassName.bestGuess(builderClass))
                     .addParameter(name, type.asNullable())
-                    .addStatement("this.${name} = ${name}")
                     .addStatement("""this.values["$name"] = $name""")
                     .addStatement("return this")
                     .build()
