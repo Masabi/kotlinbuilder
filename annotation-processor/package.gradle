@@ -1,0 +1,82 @@
+apply plugin: 'maven'
+apply plugin: 'signing'
+apply from: 'version.properties'
+
+group = "com.masabi.kotlinbuilder"
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from 'build/docs/javadoc'
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
+
+jar {
+    baseName = "masabi-kotlinbuilder"
+}
+
+artifacts {
+    archives jar
+    archives javadocJar
+    archives sourcesJar
+}
+
+signing {
+    sign configurations.archives
+}
+
+def sonatypeCreds = [
+        userName: project.properties['ossrhUsername'] ?: "",
+        password: project.properties['ossrhPassword'] ?: ""
+]
+def mavenDeployRepo = [
+        releases: project.properties['mavenReleaseRepo'] ?: "https://oss.sonatype.org/service/local/staging/deploy/maven2/",
+        snapshot: project.properties['mavenSnapshotRepo'] ?: "https://oss.sonatype.org/content/repositories/snapshots/"
+]
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: mavenDeployRepo.releases) {
+                authentication(sonatypeCreds)
+            }
+
+            snapshotRepository(url: mavenDeployRepo.snapshot) {
+                authentication(sonatypeCreds)
+            }
+
+            pom.project {
+                name 'Kotlin Builder'
+                packaging 'jar'
+                description 'Annotation processor for generating a JVM style builder for Kotlin data classes'
+                url 'https://github.com/Masabi/kotlinbuilder'
+
+                scm {
+                    url 'https://github.com/Masabi/kotlinbuilder'
+                    connection 'scm:git:git://github.com/Masabi/kotlinbuilder.git'
+                    developerConnection 'scm:git:gitgithub.com/Masabi/kotlinbuilder.git'
+                }
+
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        distribution 'repo'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'tddmonkey'
+                        name 'Colin Vipurs'
+                    }
+                }
+            }
+        }
+    }
+}

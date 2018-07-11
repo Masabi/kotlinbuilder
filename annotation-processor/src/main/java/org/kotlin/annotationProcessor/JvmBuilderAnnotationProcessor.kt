@@ -63,8 +63,6 @@ class JvmBuilderAnnotationProcessor : AbstractProcessor() {
             .build()
     }
 
-    // TODO is "data" a modifier somewhere so we can error if we're applied to the wrong class?
-
     private fun propertiesFrom(targetClass: Element): List<BuilderField> {
         val constructors = ElementFilter.constructorsIn(targetClass.enclosedElements)
 
@@ -103,7 +101,12 @@ class JvmBuilderAnnotationProcessor : AbstractProcessor() {
         }
 
         private fun builderSpecs(): Iterable<FunSpec> {
-            return listOf(builderSpec(), nonNullArgCheckerSpec(), mandatoryArgCheckerSpec(), fillInMissingNullables())
+            return listOf(
+                    builderSpec(),
+                    nonNullArgCheckerSpec(),
+                    mandatoryArgCheckerSpec(),
+                    fillInMissingNullables()
+            )
         }
 
         private fun nonNullArgCheckerSpec(): FunSpec {
