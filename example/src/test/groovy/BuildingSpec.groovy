@@ -51,6 +51,14 @@ class BuildingSpec extends Specification {
             direct == built
     }
 
+    def "will error if trying to build and a value isn't provided for a non-null field"() {
+        when:
+            new Param1Int_Builder().withParam1(null).build()
+
+        then:
+            thrown(IllegalStateException)
+    }
+
     def "will error if trying to build and single mandatory parameter hasn't been provided"() {
         when:
             new Param1Int_Builder().build()
@@ -72,5 +80,13 @@ class BuildingSpec extends Specification {
     def "uses defaults when provided"() {
         expect:
             new Param1Default_Builder().build().defaultString == "The D. Fault"
+    }
+
+    def "can use a static builder on the data class"() {
+        when:
+            BuilderMethodProvided.builder().build()
+
+        then:
+            notThrown()
     }
 }

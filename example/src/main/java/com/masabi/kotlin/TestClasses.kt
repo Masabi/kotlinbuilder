@@ -22,3 +22,10 @@ data class NullableAndMandatoryMixed(val nullableString: String?, val nonNullabl
 
 @JvmBuilder
 data class Param1Default(val defaultString: String = "The D. Fault")
+
+@JvmBuilder
+data class BuilderMethodProvided(val param1: Int = 1, val param2: String = "Default") {
+    companion object {
+        @JvmStatic fun builder() = BuilderMethodProvided_Builder()
+    }
+}
