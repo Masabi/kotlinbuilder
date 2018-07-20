@@ -82,6 +82,11 @@ class BuildingSpec extends Specification {
             new Param1Default_Builder().build().defaultString == "The D. Fault"
     }
 
+    def "uses provided value instead of null when provided"() {
+        expect:
+            new Param1NullableString_Builder().withNullableString("provided").build().nullableString == "provided"
+    }
+
     def "can use a static builder on the data class"() {
         when:
             BuilderMethodProvided.builder().build()

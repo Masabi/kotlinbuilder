@@ -128,6 +128,7 @@ class JvmBuilderAnnotationProcessor : AbstractProcessor() {
                     .addParameter(ParameterSpec.builder("parametersByName", ParameterizedTypeName.get(Map::class.asClassName(), String::class.asTypeName().asNullable(), KParameter::class.asTypeName())).build())
                     .addStatement("""
                         parametersByName
+                            .filter { !values.containsKey(it.value.name) }
                             .filter { it.value.type.isMarkedNullable }
                             .filter { !it.value.isOptional }
                             .forEach { values[it.key!!] = null }
