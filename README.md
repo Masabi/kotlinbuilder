@@ -80,7 +80,7 @@ The builder uses runtime reflection for nullability and default paremeters, so t
 apply plugin: 'kotlin'
 apply plugin: 'kotlin-kapt'
 
-def kotlinbuilderVersion = "0.0.1"
+def kotlinbuilderVersion = "1.0.0"
 
 dependencies {
 	compile(
@@ -96,6 +96,6 @@ dependencies {
 ```
 
 # Change Log
-**Version 0.0.1 (13-07-2018)**
+**Version 1.0.0 (20-07-2018)**
 
 Initial release
