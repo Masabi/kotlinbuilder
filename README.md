@@ -90,7 +90,7 @@ dependencies {
     )
 
     kapt(
-        project("com.masabi.kotlinbuilder:kotlinbuilder:$kotlinbuilderVersion")
+        "com.masabi.kotlinbuilder:kotlinbuilder:$kotlinbuilderVersion"
     )
 }
 ```
