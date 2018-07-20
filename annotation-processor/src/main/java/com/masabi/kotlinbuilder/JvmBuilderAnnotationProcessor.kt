@@ -1,4 +1,4 @@
-package org.kotlin.annotationProcessor
+package com.masabi.kotlinbuilder
 
 import com.squareup.kotlinpoet.*
 import java.io.File
@@ -16,7 +16,7 @@ import kotlin.reflect.KParameter
 annotation class JvmBuilder
 
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
-@SupportedAnnotationTypes("org.kotlin.annotationProcessor.JvmBuilder")
+@SupportedAnnotationTypes("com.masabi.kotlinbuilder.JvmBuilder")
 @SupportedOptions(JvmBuilderAnnotationProcessor.KAPT_KOTLIN_GENERATED_OPTION_NAME)
 class JvmBuilderAnnotationProcessor : AbstractProcessor() {
     companion object {
