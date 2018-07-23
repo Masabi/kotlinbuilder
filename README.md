@@ -96,6 +96,10 @@ dependencies {
 ```
 
 # Change Log
+**Version 1.0.1 (23-07-2018)**
+
+Fixed issue where nullable values weren't being overriden
+
 **Version 1.0.0 (20-07-2018)**
 
 Initial release
