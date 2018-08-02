@@ -1,5 +1,6 @@
 package com.masabi.kotlinbuilder
 
+import com.masabi.kotlinbuilder.annotations.JvmBuilder
 import com.squareup.kotlinpoet.*
 import java.io.File
 import javax.annotation.processing.*
@@ -12,25 +13,22 @@ import javax.tools.Diagnostic.Kind.ERROR
 import javax.tools.Diagnostic.Kind.WARNING
 import kotlin.reflect.KParameter
 
-@Target(AnnotationTarget.CLASS)
-annotation class JvmBuilder
+private const val KAPT_KOTLIN_GENERATED_OPTION_NAME = "kapt.kotlin.generated"
 
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
-@SupportedAnnotationTypes("com.masabi.kotlinbuilder.JvmBuilder")
-@SupportedOptions(JvmBuilderAnnotationProcessor.KAPT_KOTLIN_GENERATED_OPTION_NAME)
+@SupportedAnnotationTypes("com.masabi.kotlinbuilder.annotations.JvmBuilder")
+@SupportedOptions(KAPT_KOTLIN_GENERATED_OPTION_NAME)
 class JvmBuilderAnnotationProcessor : AbstractProcessor() {
-    companion object {
-        const val KAPT_KOTLIN_GENERATED_OPTION_NAME = "kapt.kotlin.generated"
-    }
 
     override fun process(annotations: MutableSet<out TypeElement>?, roundEnv: RoundEnvironment): Boolean {
         val annotatedElements = roundEnv.getElementsAnnotatedWith(JvmBuilder::class.java)
         if (annotatedElements.isEmpty()) return false
 
-        val kaptKotlinGeneratedDir = processingEnv.options[KAPT_KOTLIN_GENERATED_OPTION_NAME] ?: run {
-            processingEnv.messager.printMessage(ERROR, "Can't find the target directory for generated Kotlin files.")
-            return false
-        }
+        val kaptKotlinGeneratedDir = processingEnv.options[KAPT_KOTLIN_GENERATED_OPTION_NAME]
+                ?: run {
+                    processingEnv.messager.printMessage(ERROR, "Can't find the target directory for generated Kotlin files.")
+                    return false
+                }
 
         annotatedElements.forEach {
             generateBuilder(kaptKotlinGeneratedDir, it)
@@ -45,9 +43,9 @@ class JvmBuilderAnnotationProcessor : AbstractProcessor() {
         val builderClassName = "${className}_Builder"
 
         FileSpec.builder(pack, builderClassName)
-            .addType(builderSpec(builderClassName, annotatedElement))
-            .build()
-            .writeTo(File(generationDir, "$builderClassName.kt"))
+                .addType(builderSpec(builderClassName, annotatedElement))
+                .build()
+                .writeTo(File(generationDir, "$builderClassName.kt"))
     }
 
     private fun builderSpec(builderClassName: String, targetClass: Element): TypeSpec {
@@ -58,9 +56,9 @@ class JvmBuilderAnnotationProcessor : AbstractProcessor() {
         )
 
         return TypeSpec.classBuilder(builderClassName)
-            .addProperties(builderClass.propertySpecs())
-            .addFunctions(builderClass.funSpecs())
-            .build()
+                .addProperties(builderClass.propertySpecs())
+                .addFunctions(builderClass.funSpecs())
+                .build()
     }
 
     private fun propertiesFrom(targetClass: Element): List<BuilderField> {
@@ -91,9 +89,9 @@ class JvmBuilderAnnotationProcessor : AbstractProcessor() {
         private fun mapBasedProperties(): PropertySpec {
             val name = ParameterizedTypeName.get(ClassName("kotlin.collections", "MutableMap"), String::class.asTypeName(), Any::class.asTypeName().asNullable())
             return PropertySpec.builder("values", name)
-                .addModifiers(KModifier.PRIVATE)
-                .initializer("mutableMapOf()")
-                .build()
+                    .addModifiers(KModifier.PRIVATE)
+                    .initializer("mutableMapOf()")
+                    .build()
         }
 
         fun funSpecs(): Iterable<FunSpec> {
@@ -111,15 +109,15 @@ class JvmBuilderAnnotationProcessor : AbstractProcessor() {
 
         private fun nonNullArgCheckerSpec(): FunSpec {
             return FunSpec.builder("verifyNonNullArgumentsArePresent")
-                .addModifiers(KModifier.PRIVATE)
-                .addParameter(ParameterSpec.builder("parametersByName", ParameterizedTypeName.get(Map::class.asClassName(), String::class.asTypeName().asNullable(), KParameter::class.asTypeName())).build())
-                .addStatement("""
+                    .addModifiers(KModifier.PRIVATE)
+                    .addParameter(ParameterSpec.builder("parametersByName", ParameterizedTypeName.get(Map::class.asClassName(), String::class.asTypeName().asNullable(), KParameter::class.asTypeName())).build())
+                    .addStatement("""
                     parametersByName
                         .filter { !it.value.type.isMarkedNullable }
                         .filter { !it.value.isOptional }
                         .forEach { if (values.get(it.key) == null) throw IllegalStateException("'${'$'}{it.key}' cannot be null") }
                     """.trimIndent())
-                .build()
+                    .build()
         }
 
         private fun fillInMissingNullables(): FunSpec {

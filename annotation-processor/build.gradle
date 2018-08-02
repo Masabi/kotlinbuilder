@@ -2,6 +2,7 @@ apply plugin: 'kotlin'
 apply from: 'package.gradle'
 
 dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    compile 'com.squareup:kotlinpoet:0.7.0'
+	compileOnly project(':annotations')
+	implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+	implementation 'com.squareup:kotlinpoet:0.7.0'
 }
