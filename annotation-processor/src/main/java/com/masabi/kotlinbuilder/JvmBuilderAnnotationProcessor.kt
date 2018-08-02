@@ -164,7 +164,7 @@ class JvmBuilderAnnotationProcessor : AbstractProcessor() {
 
     data class BuilderField(val name: String, val type: TypeName) {
         fun asFunSpec(builderClass: String): FunSpec {
-            return FunSpec.builder("with${name.capitalize()}")
+            return FunSpec.builder(name)
                     .returns(ClassName.bestGuess(builderClass))
                     .addParameter(name, type.asNullable())
                     .addStatement("""this.values["$name"] = $name""")
