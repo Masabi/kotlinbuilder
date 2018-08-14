@@ -1,1 +1,11 @@
 apply plugin: 'kotlin'
+
+apply from: '../package.gradle'
+
+jar {
+    baseName = "masabi-kotlinbuilder"
+}
+
+dependencies {
+    compileOnly "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+}

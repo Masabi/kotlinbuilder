@@ -1,5 +1,4 @@
 import com.masabi.kotlin.*
-import spock.lang.PendingFeature
 import spock.lang.Specification
 
 class BuildingSpec extends Specification {
