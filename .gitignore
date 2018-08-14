@@ -1,4 +1,27 @@
-build/
-*.i??
-.gradle/
 out/
+
+# Log Files
+*.log
+
+# IntelliJ IDEA modules
+*.iml
+
+# IntelliJ IDEA folder
+.idea
+
+# Generated files
+bin/
+gen/
+
+# Gradle files
+.gradle/
+build/
+
+# Misc
+.DS_Store
+Thumbs.db
+*.swp
+*.bak
+
+# Local configuration file (sdk path, etc)
+local.properties

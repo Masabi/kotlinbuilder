@@ -1,6 +1,7 @@
 package com.masabi.kotlin
 
-import com.masabi.kotlinbuilder.JvmBuilder
+import com.masabi.kotlinbuilder.annotations.JvmBuilder
+
 
 @JvmBuilder
 data class Param1Int(val param1: Int)
