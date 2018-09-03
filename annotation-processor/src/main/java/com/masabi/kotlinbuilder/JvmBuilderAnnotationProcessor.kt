@@ -1,5 +1,10 @@
 package com.masabi.kotlinbuilder
 
+import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.FunSpec
+import com.squareup.kotlinpoet.TypeName
+
+import com.masabi.kotlinbuilder.JvmBuilderAnnotationProcessor.BuilderField
 import com.masabi.kotlinbuilder.annotations.JvmBuilder
 import com.squareup.kotlinpoet.*
 import java.io.File
@@ -7,6 +12,7 @@ import javax.annotation.processing.*
 import javax.lang.model.SourceVersion
 import javax.lang.model.element.Element
 import javax.lang.model.element.TypeElement
+import javax.lang.model.element.VariableElement
 import javax.lang.model.type.TypeMirror
 import javax.lang.model.util.ElementFilter
 import javax.tools.Diagnostic.Kind.ERROR
@@ -68,9 +74,10 @@ class JvmBuilderAnnotationProcessor : AbstractProcessor() {
             processingEnv.messager.printMessage(ERROR, "No primary constructor found")
         }
 
+        val setterPrefix = targetClass.setterPrefix
         val primaryConstructor = constructors.sortedBy { it.parameters.size }.last()
         val constructorParams = primaryConstructor.parameters
-        return constructorParams.map { BuilderField(it.simpleName.toString(), it.asType().asTypeName().corrected()) }
+        return constructorParams.map { it.asBuilderField(setterPrefix) }
     }
 
     private fun log(any: Any) {
@@ -160,17 +167,35 @@ class JvmBuilderAnnotationProcessor : AbstractProcessor() {
         }
     }
 
-    data class BuilderField(val name: String, val type: TypeName) {
+    data class BuilderField(val name: String, val type: TypeName, val setterPrefix: String) {
         fun asFunSpec(builderClass: String): FunSpec {
-            return FunSpec.builder(name)
+            return FunSpec.builder(generateSetterName())
                     .returns(ClassName.bestGuess(builderClass))
                     .addParameter(name, type.asNullable())
                     .addStatement("""this.values["$name"] = $name""")
                     .addStatement("return this")
                     .build()
         }
+
+        fun generateSetterName(): String {
+            return if (setterPrefix.isNotEmpty()) {
+                "$setterPrefix${name.capitalize()}"
+            } else {
+                name
+            }
+        }
     }
 }
+
+private fun VariableElement.asBuilderField(setterPrefix: String): BuilderField =
+    BuilderField(
+        name = simpleName.toString(),
+        type = asType().asTypeName().corrected(),
+        setterPrefix = setterPrefix
+    )
+
+private val Element.setterPrefix: String
+    get() = getAnnotation(JvmBuilder::class.java).setterPrefix
 
 private fun TypeName.corrected(): TypeName {
     return if (this.toString() == "java.lang.String") ClassName("kotlin", "String") else this
