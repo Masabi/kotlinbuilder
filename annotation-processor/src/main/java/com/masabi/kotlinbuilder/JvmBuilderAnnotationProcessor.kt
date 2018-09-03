@@ -1,5 +1,9 @@
 package com.masabi.kotlinbuilder
 
+import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.FunSpec
+import com.squareup.kotlinpoet.TypeName
+
 import com.masabi.kotlinbuilder.JvmBuilderAnnotationProcessor.BuilderField
 import com.masabi.kotlinbuilder.annotations.JvmBuilder
 import com.squareup.kotlinpoet.*
