@@ -93,4 +93,13 @@ class BuildingSpec extends Specification {
         then:
             notThrown()
     }
+
+    def "can use a custom method for field spec"() {
+        expect:
+            new CustomSetterSpec_Builder()
+                    .withParam1("ignored")
+                    .build()
+                    .param1 == "ignored"
+
+    }
 }

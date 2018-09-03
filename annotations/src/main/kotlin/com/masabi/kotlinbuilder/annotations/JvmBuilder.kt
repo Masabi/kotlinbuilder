@@ -1,4 +1,7 @@
 package com.masabi.kotlinbuilder.annotations
 
 @Target(AnnotationTarget.CLASS)
-annotation class JvmBuilder
+@Retention(AnnotationRetention.SOURCE)
+annotation class JvmBuilder(
+    val setterPrefix: String = ""
+)
