@@ -1,7 +1,15 @@
 apply plugin: 'kotlin'
-apply from: 'package.gradle'
+apply from: '../package.gradle'
+
+jar {
+	baseName = "masabi-kotlinbuilder-processor"
+}
 
 dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    compile 'com.squareup:kotlinpoet:0.7.0'
+	compileOnly(
+		project(':annotations'),
+		"org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+	)
+
+	implementation 'com.squareup:kotlinpoet:0.7.0'
 }

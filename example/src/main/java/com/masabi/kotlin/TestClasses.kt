@@ -1,6 +1,7 @@
 package com.masabi.kotlin
 
-import com.masabi.kotlinbuilder.JvmBuilder
+import com.masabi.kotlinbuilder.annotations.JvmBuilder
+
 
 @JvmBuilder
 data class Param1Int(val param1: Int)
@@ -29,3 +30,6 @@ data class BuilderMethodProvided(val param1: Int = 1, val param2: String = "Defa
         @JvmStatic fun builder() = BuilderMethodProvided_Builder()
     }
 }
+
+@JvmBuilder(setterPrefix = "with")
+data class CustomSetterSpec(val param1: String)

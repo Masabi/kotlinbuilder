@@ -80,11 +80,11 @@ The builder uses runtime reflection for nullability and default paremeters, so t
 apply plugin: 'kotlin'
 apply plugin: 'kotlin-kapt'
 
-def kotlinbuilderVersion = "1.0.0"
+def kotlinbuilderVersion = "1.0.1"
 
 dependencies {
-	compile(
-        "com.masabi.kotlinbuilder:kotlinbuilder:$kotlinbuilderVersion",
+  compileOnly "com.masabi.kotlinbuilder:kotlinbuilder-annotations:$kotlinbuilderVersion"
+	implementation (
         "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version",
         "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
     )
