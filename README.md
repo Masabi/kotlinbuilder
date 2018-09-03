@@ -15,8 +15,8 @@ data class Person(val name: String, val age: Int)
 After applying kapt, a `Person_Builder` class will be generated allowing you to construct an object from other language, e.g. in Java this would be:
 ```
 new Person_Builder()
-    .withName("Henry")
-    .withAge(15)
+    .name("Henry")
+    .age(15)
     .build()
 ```
 
@@ -33,7 +33,7 @@ Groovy Test:
 ```
     def "will error if trying to build and a value isn't provided for a non-null field"() {
         when:
-            new Param1Int_Builder().withParam1(null).build()
+            new Param1Int_Builder().param1(null).build()
 
         then:
             thrown(IllegalStateException)
@@ -69,8 +69,22 @@ data class BuilderMethodProvided(val param1: Int = 1, val param2: String = "Defa
     }
 }
 ```
-
 Obviously this won't compile until you have run kapt to generate the builder.
+
+### Custom setter prefix
+As of version `1.1.0` it is possible to provide a custom prefix for the generated setter methods.
+
+```
+@JvmBuilder(setterPrefix = "with")
+data class CustomSetterSpec(val param1: String)
+```
+
+```
+new CustomSetterSpec_Builder()
+    .withParam1("ignored")
+    .build()
+```
+Please note that prior to this version the default prefix was `with`.  This has been removed so that no default is provided.
 
 ## Getting Started
 Kotlin Builder is available from maven central and must be added as a `kapt` and `compile` dependency to your project.  The `example/` directory has a fully working example to get you started.
@@ -80,26 +94,32 @@ The builder uses runtime reflection for nullability and default paremeters, so t
 apply plugin: 'kotlin'
 apply plugin: 'kotlin-kapt'
 
-def kotlinbuilderVersion = "1.0.1"
+def kotlinbuilderVersion = "1.1.0"
 
 dependencies {
-  compileOnly "com.masabi.kotlinbuilder:kotlinbuilder-annotations:$kotlinbuilderVersion"
+  compileOnly "com.masabi.kotlinbuilder:kotlinbuilder:$kotlinbuilderVersion"
 	implementation (
         "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version",
         "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
     )
 
     kapt(
-        "com.masabi.kotlinbuilder:kotlinbuilder:$kotlinbuilderVersion"
+        "com.masabi.kotlinbuilder:kotlinbuilder-processor:$kotlinbuilderVersion"
     )
 }
 ```
 
 # Change Log
+**Version 1.1.0 (03-09-2018)**
+
+* Split the annotation out from the processor to avoid classpath leaking ([jffiorillo](https://github.com/jffiorillo))
+* Removed "with" as the default setter prefix ([jffiorillo](https://github.com/jffiorillo))
+* Provide customer setter prefix
+
 **Version 1.0.1 (23-07-2018)**
 
-Fixed issue where nullable values weren't being overriden
+* Fixed issue where nullable values weren't being overriden
 
 **Version 1.0.0 (20-07-2018)**
 
-Initial release
+* Initial release
