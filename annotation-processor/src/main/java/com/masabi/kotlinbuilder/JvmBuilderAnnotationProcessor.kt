@@ -3,6 +3,7 @@ package com.masabi.kotlinbuilder
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.TypeName
+import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 
 import com.masabi.kotlinbuilder.JvmBuilderAnnotationProcessor.BuilderField
 import com.masabi.kotlinbuilder.annotations.JvmBuilder
@@ -94,7 +95,7 @@ class JvmBuilderAnnotationProcessor : AbstractProcessor() {
         }
 
         private fun mapBasedProperties(): PropertySpec {
-            val name = ParameterizedTypeName.get(ClassName("kotlin.collections", "MutableMap"), String::class.asTypeName(), Any::class.asTypeName().asNullable())
+            val name = ClassName("kotlin.collections", "MutableMap").parameterizedBy(String::class.asTypeName(), Any::class.asTypeName().asNullable())
             return PropertySpec.builder("values", name)
                     .addModifiers(KModifier.PRIVATE)
                     .initializer("mutableMapOf()")
@@ -117,7 +118,7 @@ class JvmBuilderAnnotationProcessor : AbstractProcessor() {
         private fun nonNullArgCheckerSpec(): FunSpec {
             return FunSpec.builder("verifyNonNullArgumentsArePresent")
                     .addModifiers(KModifier.PRIVATE)
-                    .addParameter(ParameterSpec.builder("parametersByName", ParameterizedTypeName.get(Map::class.asClassName(), String::class.asTypeName().asNullable(), KParameter::class.asTypeName())).build())
+                    .addParameter(ParameterSpec.builder("parametersByName", Map::class.asClassName().parameterizedBy(String::class.asTypeName().asNullable(), KParameter::class.asTypeName())).build())
                     .addStatement("""
                     parametersByName
                         .filter { !it.value.type.isMarkedNullable }
@@ -130,7 +131,7 @@ class JvmBuilderAnnotationProcessor : AbstractProcessor() {
         private fun fillInMissingNullables(): FunSpec {
             return FunSpec.builder("fillInMissingNullables")
                     .addModifiers(KModifier.PRIVATE)
-                    .addParameter(ParameterSpec.builder("parametersByName", ParameterizedTypeName.get(Map::class.asClassName(), String::class.asTypeName().asNullable(), KParameter::class.asTypeName())).build())
+                    .addParameter(ParameterSpec.builder("parametersByName", Map::class.asClassName().parameterizedBy(String::class.asTypeName().asNullable(), KParameter::class.asTypeName())).build())
                     .addStatement("""
                         parametersByName
                             .filter { !values.containsKey(it.value.name) }
@@ -144,7 +145,7 @@ class JvmBuilderAnnotationProcessor : AbstractProcessor() {
         private fun mandatoryArgCheckerSpec(): FunSpec {
             return FunSpec.builder("verifyMandatoryArgumentsArePresent")
                     .addModifiers(KModifier.PRIVATE)
-                    .addParameter(ParameterSpec.builder("parametersByName", ParameterizedTypeName.get(Map::class.asClassName(), String::class.asTypeName().asNullable(), KParameter::class.asTypeName())).build())
+                    .addParameter(ParameterSpec.builder("parametersByName", Map::class.asClassName().parameterizedBy(String::class.asTypeName().asNullable(), KParameter::class.asTypeName())).build())
                     .addStatement("""
                     parametersByName
                        .filter { !it.value.isOptional }
@@ -186,6 +187,8 @@ class JvmBuilderAnnotationProcessor : AbstractProcessor() {
         }
     }
 }
+
+private fun TypeName.asNullable(): TypeName = copy(nullable = true)
 
 private fun VariableElement.asBuilderField(setterPrefix: String): BuilderField =
     BuilderField(
