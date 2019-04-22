@@ -8,8 +8,11 @@ jar {
 dependencies {
 	compileOnly(
 		project(':annotations'),
-		"org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+		"org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version",
 	)
 
-	implementation 'com.squareup:kotlinpoet:1.0.1'
+	implementation(
+		'com.squareup:kotlinpoet:1.0.1',
+		"me.eugeniomarletti.kotlin.metadata:kotlin-metadata:1.4.0",
+	)
 }
