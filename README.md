@@ -97,7 +97,7 @@ apply plugin: 'kotlin-kapt'
 def kotlinbuilderVersion = "1.1.0"
 
 dependencies {
-  compileOnly "com.masabi.kotlinbuilder:kotlinbuilder:$kotlinbuilderVersion"
+  compileOnly "com.masabi.kotlinbuilder:masabi-kotlinbuilder:$kotlinbuilderVersion"
   
   implementation (
         "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version",
