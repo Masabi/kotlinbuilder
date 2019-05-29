@@ -89,7 +89,7 @@ Please note that prior to this version the default prefix was `with`.  This has 
 ## Getting Started
 Kotlin Builder is available from maven central and must be added as a `kapt` and `compile` dependency to your project.  The `example/` directory has a fully working example to get you started.
 
-The builder uses runtime reflection for nullability and default paremeters, so this must be provided on your runtime classpath, shown below:
+The builder uses runtime reflection for nullability and default parameters, so this must be provided on your runtime classpath, shown below:
 ```
 apply plugin: 'kotlin'
 apply plugin: 'kotlin-kapt'
