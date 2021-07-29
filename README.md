@@ -105,7 +105,7 @@ dependencies {
     )
 
     kapt(
-        "com.masabi.kotlinbuilder:kotlinbuilder-processor:$kotlinbuilderVersion"
+        "com.masabi.kotlinbuilder:masabi-kotlinbuilder-processor:$kotlinbuilderVersion"
     )
 }
 ```
